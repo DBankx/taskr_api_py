@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, \
   AbstractBaseUser, PermissionsMixin
+from django.core.validators import  RegexValidator
 
 
 class UserManager(BaseUserManager):
@@ -43,8 +44,13 @@ class User(AbstractBaseUser, PermissionsMixin):
   bio = models.TextField(blank=True)
   country = models.CharField(max_length=255)
   avatar = models.CharField(max_length=255)
+  phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
+  phone = models.CharField(validators=[phone_regex], max_length=17, blank=True)
   is_staff = models.BooleanField(default=False)
   is_active = models.BooleanField(default=True)
+  has_on_boarded = models.BooleanField(default=False)
+  is_email_verified = models.BooleanField(default=False)
+  is_phone_verified = models.BooleanField(default=False)
 
   objects = UserManager()
 
