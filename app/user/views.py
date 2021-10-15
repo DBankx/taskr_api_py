@@ -14,7 +14,7 @@ class LoginUserApiView(ObtainAuthToken):
 	serializer_class = serializers.LoginUserSerializer
 
 
-class ProfileUserApiView(generics.RetrieveUpdateAPIView):
+class ProfileUserApiView(generics.RetrieveUpdateAPIView, generics.DestroyAPIView):
 	"""Get & update a users profile"""
 
 	permission_classes = (permissions.IsAuthenticated, )
@@ -23,4 +23,4 @@ class ProfileUserApiView(generics.RetrieveUpdateAPIView):
 
 	def get_object(self):
 		"""Retrieve and return authenticated user"""
-		return self.request.user
+		return self.request.user	

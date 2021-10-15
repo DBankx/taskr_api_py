@@ -1,6 +1,12 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from core import models
+from datetime import datetime
+
+def sample_user(email='test@email.com', password='testpass123', name='test man'):
+	"""Creates a test sample user"""
+
+	return get_user_model().objects.create_user(email=email, password=password, name=name)
 
 class ModelsTest(TestCase):
 	"""Test the db models"""
@@ -31,4 +37,19 @@ class ModelsTest(TestCase):
 
 		with self.assertRaises(ValueError):
 			get_user_model().objects.create_user(None, password=self.test_password)
+
+
+	def test_task_str(self):
+		"""Test string representation of a task returns the title"""
+
+		task = models.Task.objects.create(
+			title='New test task',
+			description='This is the description of a new task',
+			price=350.00,
+			creator=sample_user(),
+			created_at=datetime.now(),
+			delivery_date=datetime.now(),
+		)
+
+		self.assertEqual(str(task), task.title)		
 					

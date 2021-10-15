@@ -20,6 +20,7 @@ class PublicUserApiTest(TestCase):
 
 		payload = {
 			'email': 'test@test.com',
+			'name': 'test man',
 			'password': 'testpass123'
 		}
 
@@ -40,6 +41,7 @@ class PublicUserApiTest(TestCase):
 		payload = {
 			'email': 'test@test.com',
 			'password': 'testpass123',
+			'name': 'test man'
 		}
 
 		get_user_model().objects.create_user(**payload)
@@ -55,6 +57,7 @@ class PublicUserApiTest(TestCase):
 		payload = {
 			'email': 'test@test.com',
 			'password': 'testpass123',
+			'name': 'test man'
 		}	
 
 		get_user_model().objects.create_user(**payload)
@@ -105,8 +108,6 @@ class PrivateUserApiTest(TestCase):
 		"""Test that user can update their profile using patch"""
 
 		payload = {
-			'first_name': 'deron',
-			'last_name': 'puterion',
 			'country': 'Nigeria',
 			'bio': 'im a good guy'
 		}
@@ -114,8 +115,6 @@ class PrivateUserApiTest(TestCase):
 		res = self.client.patch(PROFILE_URL, payload)
 
 		self.user.refresh_from_db()
-
-		self.assertEqual(self.user.first_name, payload['first_name'])
 
 		self.assertEqual(self.user.country, payload['country'])
 		

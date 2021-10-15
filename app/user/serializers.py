@@ -7,12 +7,13 @@ class UserSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = get_user_model()
-		fields = ('email', 'password')
+		fields = ('email', 'password', 'name')
 		extra_kwargs = {
 			'password': {
 				'write_only': True,
 				'min_length': 8
-			}
+			},
+
 		}
 
 	def create(self, validated_data):
@@ -46,6 +47,14 @@ class ProfileUserSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = get_user_model()
-		fields = ('id', 'email', 'first_name', 'last_name', 'bio', 'country', 'is_email_verified', 'is_phone_verified', 'phone', 'username', 'avatar', 'has_on_boarded')
-		read_only_fields = ('id', )
+		fields = ('id', 'email', 'name', 'bio', 'country', 'is_email_verified', 'is_phone_verified', 'phone', 'username', 'avatar', 'has_on_boarded')
+		read_only_fields = ('id', 'is_phone_verified', 'username', 'is_email_verified', 'has_on_boarded', 'name', 'phone', 'email')
+
 		
+class UserDetailModelSerializer(serializers.ModelSerializer):
+	"""Serializer to return user object with models"""
+
+	class Meta:
+		model = get_user_model()
+		fields = ('id', 'email', 'username', 'avatar')
+		read_only_fields = ('id', )		
