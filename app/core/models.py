@@ -3,6 +3,7 @@ from django.contrib.auth.models import BaseUserManager, \
   AbstractBaseUser, PermissionsMixin
 from django.core.validators import  RegexValidator
 from django.conf import settings
+from django.utils.translation import gettext_lazy as _
 
 
 class UserManager(BaseUserManager):
@@ -61,12 +62,44 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Task(models.Model):
 	"""Db model for task"""
 
+	class TaskStatus(models.TextChoices):
+		"""Statuses for tasks"""
+		ACTIVE = 'ACTIVE', _('Active')
+		ASSIGNED = 'ASSIGNED', _('Assigned')
+		COMPLETED = 'COMPLETED', _('Completed')
+		INACTIVE = 'INACTIVE', _('InActive')
+
+		
 	title = models.CharField(max_length=255, blank=False)
 	description = models.TextField(blank=True)
 	price = models.DecimalField(decimal_places=2, max_digits=5, blank=False)
 	creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+	status = models.CharField(max_length=9, choices=TaskStatus.choices, default=TaskStatus.ACTIVE)
 	created_at = models.DateTimeField(auto_now_add=True)
 	delivery_date = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
 
 	def __str__(self):
 		return self.title
+
+
+class Bid(models.Model):
+	"""Db model for a bid"""
+	class BidStatus(models.TextChoices):
+		"""Statuses for bids"""
+		SUBMITTED = 'SUBMITTED', _('Submitted')
+		ACCEPTED = 'ACCEPTED', _('Accepted')
+
+	description = models.TextField(blank=True)
+	status = models.CharField(max_length=9, choices=BidStatus.choices, default=BidStatus.SUBMITTED)
+	user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+	task = models.ForeignKey(Task, on_delete=models.CASCADE)
+	price = models.DecimalField(max_digits=5, decimal_places=2)
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
+
+	def __str__(self):
+		return self.description
+
+
+	

@@ -3,10 +3,10 @@ from django.contrib.auth import get_user_model
 from core import models
 from datetime import datetime
 
-def sample_user(email='test@email.com', password='testpass123', name='test man'):
+def sample_user(email='test@email.com', password='testpass123', name='test man', **other_fields):
 	"""Creates a test sample user"""
 
-	return get_user_model().objects.create_user(email=email, password=password, name=name)
+	return get_user_model().objects.create_user(email=email, password=password, name=name, **other_fields)
 
 class ModelsTest(TestCase):
 	"""Test the db models"""
@@ -52,4 +52,25 @@ class ModelsTest(TestCase):
 		)
 
 		self.assertEqual(str(task), task.title)		
-					
+	def test_bid_str(self):
+		"""Test string representation of a bid"""
+
+		task = models.Task.objects.create(
+			title='New test task',
+			description='This is the description of a new task',
+			price=350.00,
+			creator=sample_user(),
+			created_at=datetime.now(),
+			delivery_date=datetime.now(),
+		)
+
+		bid = models.Bid.objects.create(
+			description='This is test bid description',
+			task=task,
+			user=sample_user(email='test@test2.com', password='test 2', username='testbud'),
+			price=200.00,
+			created_at=datetime.now(),
+			updated_at=datetime.now(),
+		)				
+
+		self.assertEqual(str(bid), bid.description)
